@@ -37,18 +37,51 @@ const routes = {
     'DELETE': deleteComment
   },
   '/comments/:id/upvote': {
-    'PUT': updateComment
+    'PUT': updvoteComment
   },
   '/comments/:id/downvote': {
-    'PUT': updateComment
+    'PUT': downvoteComment
   }
 };
 
-function createComment(url, request) {}
+function createComment(url, request) {
+  const requestComment = request.body && request.body.comment;
+  const response = {};
+
+  // console.log(requestComment);
+  if (requestComment && requestComment.body && requestComment.username &&
+      requestComment.articleId && database.users[requestComment.username]
+      && database.articles[requestComment.articleId]) {
+    const comment = {
+      id: database.nextCommentId++,
+      body: requestComment.body,
+      username: requestComment.username,
+      articleId: requestComment.articleId,
+      upvotedBy: [],
+      downvotedBy: []
+    };
+
+    database.comments[comment.id] = comment;
+    database.users[comment.username].commentIds.push(comment.id);
+    database.articles[comment.articleId].commentIds.push(comment.id);
+
+    response.body = {comment: comment};
+    response.status = 201;
+  } else {
+    response.status = 400;
+  }
+
+  return response;
+
+}
 
 function updateComment(url, request) {}
 
 function deleteComment(url, request) {}
+
+function updvoteComment(url, request) {}
+
+function downvoteComment(url, request) {}
 
 function getUser(url, request) {
   const username = url.split('/').filter(segment => segment)[1];
