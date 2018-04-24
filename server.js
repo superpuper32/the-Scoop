@@ -28,8 +28,27 @@ const routes = {
   },
   '/articles/:id/downvote': {
     'PUT': downvoteArticle
+  },
+  '/comments': {
+    'POST': createComment
+  },
+  '/comments/:id': {
+    'PUT': updateComment,
+    'DELETE': deleteComment
+  },
+  '/comments/:id/upvote': {
+    'PUT': updateComment
+  },
+  '/comments/:id/downvote': {
+    'PUT': updateComment
   }
 };
+
+function createComment(url, request) {}
+
+function updateComment(url, request) {}
+
+function deleteComment(url, request) {}
 
 function getUser(url, request) {
   const username = url.split('/').filter(segment => segment)[1];
