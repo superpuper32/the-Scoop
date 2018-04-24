@@ -54,6 +54,7 @@ function createComment(url, request) {
       && database.articles[requestComment.articleId]) {
     const comment = {
       id: database.nextCommentId++,
+			url: url,
       body: requestComment.body,
       username: requestComment.username,
       articleId: requestComment.articleId,
@@ -75,7 +76,26 @@ function createComment(url, request) {
 
 }
 
-function updateComment(url, request) {}
+function updateComment(url, request) {
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const savedComment = database.comments[id];
+  const requestComment = request.body && request.body.comment;
+  const response = {};
+
+  if (!id || !requestComment || !requestComment.body) {
+    response.status = 400;
+  } else if (!savedComment) {
+    response.status = 404;
+  } else {
+    savedComment.body = requestComment.body || savedComment.body;
+    savedComment.url = requestComment.url || savedComment.url;
+
+    response.body = {comment: savedComment};
+    response.status = 200;
+  }
+
+  return response;
+}
 
 function deleteComment(url, request) {}
 
