@@ -44,6 +44,29 @@ const routes = {
   }
 };
 
+function loadDatabase() {
+  var readYaml = require('read-yaml');
+  readYaml('database.yml', function(err, data) {
+    if (err) throw err;
+    if (data) {
+      database.users = data.users;
+      database.articles = data.articles;
+      database.nextArticleId = data.nextArticleId;
+      database.comments = data.comments;
+      database.nextCommentId = data.nextCommentId;
+    }
+});
+}
+
+function saveDatabase() {
+  var yaml = require('write-yaml');
+  yaml('database.yml', database, function(err) {
+  // do stuff with err
+  console.log(err);
+});
+
+}
+
 function createComment(url, request) {
   const requestComment = request.body && request.body.comment;
   const response = {};
@@ -392,7 +415,7 @@ const requestHandler = (request, response) => {
     return response.end();
   }
 
-  response.setHeader('Access-Control-Allow-Origin', null);
+  response.setHeader('Access-Control-Allow-Origin', "*");
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   response.setHeader(
       'Access-Control-Allow-Headers', 'X-Requested-With,content-type');
